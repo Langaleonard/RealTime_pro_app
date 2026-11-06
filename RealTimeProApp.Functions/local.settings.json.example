@@ -1,0 +1,10 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "USE-YOUR-FUNCTION-HOST-STORAGE-CONNECTION-STRING",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "SqlConnectionString": "USE-YOUR-AZURE-SQL-CONNECTION-STRING",
+    "EventHubConnectionString": "USE-YOUR-EVENT-HUBS-CONNECTION-STRING",
+    "EventHubName": "order-stream"
+  }
+}
