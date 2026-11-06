@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Ws9zSOvlj4g=",
+  "dgSpecHash": "3B8P6GS6dPw=",
   "success": true,
-  "projectFilePath": "/Users/leonardlanga/Documents/RoseHub/ABCRetail/ABCRetail.csproj",
+  "projectFilePath": "/Users/leonardlanga/Documents/RoseHub/RealTime_pro_app/RealTimeProApp.csproj",
   "expectedPackageFiles": [
     "/Users/leonardlanga/.nuget/packages/azure.core/1.55.0/azure.core.1.55.0.nupkg.sha512",
     "/Users/leonardlanga/.nuget/packages/azure.data.tables/12.11.0/azure.data.tables.12.11.0.nupkg.sha512",

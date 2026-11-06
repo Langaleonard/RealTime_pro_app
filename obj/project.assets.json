@@ -601,11 +601,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/leonardlanga/Documents/RoseHub/ABCRetail/ABCRetail.csproj",
-      "projectName": "ABCRetail",
-      "projectPath": "/Users/leonardlanga/Documents/RoseHub/ABCRetail/ABCRetail.csproj",
+      "projectUniqueName": "/Users/leonardlanga/Documents/RoseHub/RealTime_pro_app/RealTimeProApp.csproj",
+      "projectName": "RealTimeProApp",
+      "projectPath": "/Users/leonardlanga/Documents/RoseHub/RealTime_pro_app/RealTimeProApp.csproj",
       "packagesPath": "/Users/leonardlanga/.nuget/packages/",
-      "outputPath": "/Users/leonardlanga/Documents/RoseHub/ABCRetail/obj/",
+      "outputPath": "/Users/leonardlanga/Documents/RoseHub/RealTime_pro_app/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/leonardlanga/.nuget/NuGet/NuGet.Config"
