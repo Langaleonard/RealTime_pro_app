@@ -15,10 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
-  <Compile Remove="ABCRetail.Functions/**/*.cs" />
-  <Content Remove="ABCRetail.Functions/**" />
-  <EmbeddedResource Remove="ABCRetail.Functions/**" />
-  <None Remove="ABCRetail.Functions/**" />
+  <Compile Remove="RealTimeProApp.Functions/**/*.cs" />
+  <Content Remove="RealTimeProApp.Functions/**" />
+  <EmbeddedResource Remove="RealTimeProApp.Functions/**" />
+  <None Remove="RealTimeProApp.Functions/**" />
 </ItemGroup>
 
 </Project>
