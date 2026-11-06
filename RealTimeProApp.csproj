@@ -3,7 +3,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>realtime-pro-app-practicum-st10125760</UserSecretsId>
+    <UserSecretsId>e9bffdee-8e3e-4d03-97db-2d2577d343ac</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
