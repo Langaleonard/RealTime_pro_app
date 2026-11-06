@@ -1,0 +1,94 @@
+@model IEnumerable<string>
+
+@{
+    ViewData["Title"] = "Log Files";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Log Files</h1>
+
+        <p class="text-muted">
+            Log files stored using Azure Files.
+        </p>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<div class="row mb-4">
+    <div class="col-md-6">
+
+        <form asp-action="Upload"
+              method="post"
+              enctype="multipart/form-data">
+
+            <h5 class="mb-3">Upload Log File</h5>
+
+            <div class="form-group mb-3">
+                <input type="file"
+                       name="logFile"
+                       class="form-control"
+                       accept=".txt,.log,.pdf" />
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Upload Log
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">
+        No log files have been uploaded yet.
+    </div>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+
+        <thead>
+            <tr>
+                <th>File Name</th>
+                <th style="width: 150px;">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var file in Model)
+            {
+                <tr>
+                    <td>@file</td>
+
+                    <td>
+                        <a asp-action="Download"
+                           asp-route-fileName="@file"
+                           class="btn btn-sm btn-primary">
+                            Download
+                        </a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}
