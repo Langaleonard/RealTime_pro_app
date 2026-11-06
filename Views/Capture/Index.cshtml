@@ -1,0 +1,43 @@
+@model CaptureViewModel
+@{
+    ViewData["Title"] = "Capture";
+}
+
+<div class="row">
+    <div class="col-lg-7">
+        <h1>Capture Telemetry</h1>
+        <p class="text-muted">Manually simulate a soil sensor event and optionally attach a drone image.</p>
+
+        <form asp-action="Index" method="post" enctype="multipart/form-data" class="card card-body shadow-sm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="SensorId" class="form-label"></label>
+                    <input asp-for="SensorId" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FieldName" class="form-label"></label>
+                    <input asp-for="FieldName" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="SoilMoisture" class="form-label"></label>
+                    <input asp-for="SoilMoisture" class="form-control" />
+                    <div class="form-text">Use a value below 30 to simulate an irrigation alert.</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Temperature" class="form-label"></label>
+                    <input asp-for="Temperature" class="form-control" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="DroneNote" class="form-label"></label>
+                <textarea asp-for="DroneNote" class="form-control" rows="3" placeholder="Example: Dry patches visible on the eastern side of Field A."></textarea>
+            </div>
+            <div class="mb-3">
+                <label asp-for="DroneImage" class="form-label"></label>
+                <input asp-for="DroneImage" class="form-control" accept="image/*" />
+            </div>
+            <button type="submit" class="btn btn-primary">Process Telemetry</button>
+        </form>
+    </div>
+</div>

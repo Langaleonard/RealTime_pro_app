@@ -1,46 +1,43 @@
-﻿@{
+@{
     ViewData["Title"] = "Home";
+    var farmer = Context.Session.GetString("FarmerEmail");
 }
 
-<div class="text-center py-5">
-
-    <h1 class="display-4 fw-bold">RealTimeProApp</h1>
-
-    <p class="lead text-muted mb-4">
-        Azure cloud storage management application
+<div class="py-5 text-center">
+    <h1 class="display-5 fw-bold">Real-Time Agriculture Monitoring</h1>
+    <p class="lead text-muted mt-3">
+        Capture soil sensor readings, review processed telemetry, upload drone images and monitor irrigation commands.
     </p>
 
-    <p>
-        Manage customer profiles, product information and product images
-        using Microsoft Azure Storage Services.
-    </p>
+    @if (!string.IsNullOrWhiteSpace(farmer))
+    {
+        <p class="mb-4">Signed in as <strong>@farmer</strong></p>
+    }
 
-    <div class="mt-4">
-
-        <a asp-controller="Customers"
-            asp-action="Index"
-            class="btn btn-primary btn-lg me-2">
-                Capture
-            </a>
-
-            <a asp-controller="Products"
-            asp-action="Index"
-            class="btn btn-success btn-lg me-2">
-                View Processed Data
-            </a>
-
-            <a asp-controller="Orders"
-            asp-action="Index"
-            class="btn btn-danger btn-lg me-2">
-                Orders
-            </a>
-
-            <a asp-controller="Logs"
-            asp-action="Index"
-            class="btn btn-info btn-lg">
-                Logs
-            </a>
-
+    <div class="d-flex justify-content-center gap-2 flex-wrap">
+        <a asp-controller="Capture" asp-action="Index" class="btn btn-primary btn-lg">Capture Telemetry</a>
+        <a asp-controller="ProcessedData" asp-action="Index" class="btn btn-outline-primary btn-lg">View Processed Data</a>
+        <a asp-controller="Logs" asp-action="Index" class="btn btn-outline-secondary btn-lg">View Logs & Commands</a>
     </div>
+</div>
 
+<div class="row g-3 pb-5">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+            <h5>Sensor Stream</h5>
+            <p class="mb-0">The practicum can use Azure Event Hubs to receive large volumes of soil sensor events.</p>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+            <h5>Processing</h5>
+            <p class="mb-0">Telemetry is checked for low soil moisture. Readings below 30% are marked as irrigation required.</p>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm"><div class="card-body">
+            <h5>Automation</h5>
+            <p class="mb-0">When a problem is detected, an irrigation command is written to Azure Queue Storage.</p>
+        </div></div>
+    </div>
 </div>

@@ -1,94 +1,53 @@
-@model IEnumerable<string>
-
+@model OperationsViewModel
 @{
-    ViewData["Title"] = "Log Files";
+    ViewData["Title"] = "Logs & Commands";
+    var usingAzure = ViewBag.UsingAzure is bool b && b;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1>Log Files</h1>
+<h1>Logs & Irrigation Commands</h1>
+<p class="text-muted">Operational evidence created while telemetry is processed. Storage mode: @(usingAzure ? "Azure Storage" : "Local demo fallback").</p>
 
-        <p class="text-muted">
-            Log files stored using Azure Files.
-        </p>
-    </div>
-</div>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
-}
-
-<div class="row mb-4">
-    <div class="col-md-6">
-
-        <form asp-action="Upload"
-              method="post"
-              enctype="multipart/form-data">
-
-            <h5 class="mb-3">Upload Log File</h5>
-
-            <div class="form-group mb-3">
-                <input type="file"
-                       name="logFile"
-                       class="form-control"
-                       accept=".txt,.log,.pdf" />
+<div class="row g-4 mt-1">
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4>Irrigation Commands</h4>
+                <p class="text-muted">Low soil moisture creates a message for the irrigation process.</p>
+                @if (!Model.IrrigationCommands.Any())
+                {
+                    <div class="alert alert-info">No irrigation commands yet. Capture a moisture reading below 30%.</div>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                    @foreach (var item in Model.IrrigationCommands)
+                    {
+                        <li class="list-group-item px-0">@item</li>
+                    }
+                    </ul>
+                }
             </div>
-
-            <button type="submit"
-                    class="btn btn-primary">
-                Upload Log
-            </button>
-
-        </form>
-
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4>Operational Logs</h4>
+                <p class="text-muted">In Azure mode these are files stored in the <code>farm-logs</code> file share.</p>
+                @if (!Model.OperationalLogs.Any())
+                {
+                    <div class="alert alert-info">No logs yet.</div>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                    @foreach (var item in Model.OperationalLogs)
+                    {
+                        <li class="list-group-item px-0">@item</li>
+                    }
+                    </ul>
+                }
+            </div>
+        </div>
     </div>
 </div>
-
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-info">
-        No log files have been uploaded yet.
-    </div>
-}
-else
-{
-    <table class="table table-striped table-bordered">
-
-        <thead>
-            <tr>
-                <th>File Name</th>
-                <th style="width: 150px;">Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            @foreach (var file in Model)
-            {
-                <tr>
-                    <td>@file</td>
-
-                    <td>
-                        <a asp-action="Download"
-                           asp-route-fileName="@file"
-                           class="btn btn-sm btn-primary">
-                            Download
-                        </a>
-                    </td>
-                </tr>
-            }
-
-        </tbody>
-
-    </table>
-}

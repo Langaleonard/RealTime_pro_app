@@ -1,68 +1,25 @@
-using ABCRetail.Services;
 using Microsoft.AspNetCore.Mvc;
+using RealTimeProApp.Models;
+using RealTimeProApp.Services;
 
-namespace ABCRetail.Controllers
+namespace RealTimeProApp.Controllers;
+
+public class LogsController : Controller
 {
-    public class LogsController : Controller
+    private readonly AgricultureStorageService _storage;
+
+    public LogsController(AgricultureStorageService storage)
     {
-        private readonly FileStorageService _fileStorageService;
+        _storage = storage;
+    }
 
-        public LogsController(
-            FileStorageService fileStorageService)
+    public async Task<IActionResult> Index()
+    {
+        ViewBag.UsingAzure = _storage.UsingAzure;
+        return View(new OperationsViewModel
         {
-            _fileStorageService = fileStorageService;
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var files =
-                await _fileStorageService.GetFilesAsync();
-
-            return View(files);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upload(IFormFile? logFile)
-        {
-            if (logFile == null || logFile.Length == 0)
-            {
-                TempData["ErrorMessage"] =
-                    "Please select a file to upload.";
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            await _fileStorageService.UploadFileAsync(logFile);
-
-            TempData["SuccessMessage"] =
-                "Log file uploaded successfully.";
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        public async Task<IActionResult> Download(string fileName)
-        {
-            if (string.IsNullOrWhiteSpace(fileName))
-            {
-                return NotFound();
-            }
-
-            try
-            {
-                var file =
-                    await _fileStorageService
-                        .DownloadFileAsync(fileName);
-
-                return File(
-                    file.Content,
-                    file.ContentType,
-                    fileName);
-            }
-            catch
-            {
-                return NotFound();
-            }
-        }
+            IrrigationCommands = await _storage.GetIrrigationCommandsAsync(),
+            OperationalLogs = await _storage.GetOperationalLogsAsync()
+        });
     }
 }

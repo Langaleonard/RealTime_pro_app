@@ -1,12 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace ABCRetail.Controllers
+namespace RealTimeProApp.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
-    {
-        public IActionResult Index()
-        {
-            return View();
-        }
-    }
+    public IActionResult Index() => View();
 }

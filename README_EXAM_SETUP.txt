@@ -1,155 +1,78 @@
-REALTIME_PRO_APP - PRACTICUM STARTER
-===================================
+REALTIME AGRICULTURE PRACTICUM - QUICK SETUP
+============================================
+
+WHAT THIS STARTER ALREADY DOES
+- Farmer demo login
+- Capture soil telemetry manually
+- Upload a drone image
+- Mark moisture below 30% as "Irrigation Required"
+- Save telemetry to Azure Table Storage when connected
+- Save drone images to Blob container: drone-images
+- Create irrigation messages in Queue: irrigation-commands
+- Create operational logs in Azure File Share: farm-logs
+- If Azure is not connected, the same screens still work with a local in-memory fallback
+
+RUN THE WEB APP
+cd /Users/leonardlanga/Documents/RoseHub/RealTime_pro_app
+dotnet restore
+dotnet build
+dotnet run
+
+CONNECT AZURE STORAGE
+1. Azure Portal > Storage accounts > create/select your practicum storage account.
+2. Go to Access keys > copy a Connection string.
+3. For LOCAL testing, use .NET user secrets. From the project root run:
+   dotnet user-secrets set "AzureStorage:ConnectionString" "PASTE_CONNECTION_STRING_HERE"
+4. Do not put the real connection string in appsettings.json or GitHub.
+5. The key the app expects is:
+   AzureStorage:ConnectionString
+5. For Azure App Service, add Environment Variable:
+   AzureStorage__ConnectionString = <connection string>
+
+AZURE RESOURCES CREATED AUTOMATICALLY BY THE APP
+- Table: Telemetry
+- Blob container: drone-images
+- Queue: irrigation-commands
+- File share: farm-logs
+
+SIMPLE TEST
+1. Open Capture.
+2. Enter Sensor ID SENSOR-001 and Field A.
+3. Set Soil Moisture to 21 and Temperature to 29.
+4. Add a short drone note and optionally upload an image.
+5. Submit.
+6. Processed Data should show "Irrigation Required".
+7. Logs / Commands should show a START_IRRIGATION message.
+8. In Azure, screenshot the Telemetry table, drone-images container, irrigation-commands queue and farm-logs file share.
+
+EVENT HUBS / AZURE FUNCTIONS FOR THE EXAM
+This working web demo uses Azure Storage directly so it stays reliable.
+If the exam specifically requires Event Hubs, use this architecture:
+Sensor/Web App -> Event Hubs -> Azure Function -> processed storage/database -> queue command
+
+If Event Hubs is allowed:
+- Create Event Hubs namespace.
+- Create event hub named soil-telemetry.
+- Add its connection string to the Function App settings.
+- Use an Event Hubs-triggered Function to apply the same moisture < 30 logic.
+
+If Azure SQL is specifically required by the paper, follow the paper and add Azure SQL for processed records. Do not replace a required service just because this starter has a working Azure Table fallback.
 
 IMPORTANT
----------
-This is a starter only. Read the actual exam question first.
-If the exam changes Azure SQL, Event Hubs, names, fields, or the scenario, change the project to match the paper.
-Do not submit placeholder values or claim a service worked if you could not prove it.
+- The login is intentionally a simple practicum demo, not production authentication.
+- Do not commit connection strings, local.settings.json or passwords.
+- Follow the actual exam question first. This starter is only a fast base.
 
-PROJECT FOLDERS
----------------
-RealTimeProApp             = ASP.NET Core MVC web app
-RealTimeProApp.Functions   = Azure Functions project
-sql/setup.sql              = SQL table and test queries
 
-1. COPY TO YOUR WORKING FOLDER
-------------------------------
-Expected location:
-/Users/leonardlanga/Documents/RoseHub/RealTime_pro_app
-
-2. FIRST LOCAL CHECK
---------------------
-Web app:
-cd /Users/leonardlanga/Documents/RoseHub/RealTime_pro_app/RealTimeProApp
-dotnet restore
-dotnet build
-dotnet run
-
-Functions:
+RUN THE FUNCTIONS PROJECT (OPTIONAL PRACTICUM DEMO)
 cd /Users/leonardlanga/Documents/RoseHub/RealTime_pro_app/RealTimeProApp.Functions
+cp local.settings.example.json local.settings.json
+# Replace the placeholder connection string in local.settings.json, then:
 dotnet restore
 dotnet build
 dotnet run
 
-3. CREATE AZURE RESOURCES IN THIS ORDER
----------------------------------------
-[ ] Resource Group
-[ ] Azure SQL Server + Database
-[ ] Run sql/setup.sql in Query Editor
-[ ] App Service for the MVC app
-[ ] Event Hubs namespace
-[ ] Event Hub, normally order-stream unless the exam says otherwise
-[ ] Function App
-[ ] Monitoring / Metrics
-[ ] Scaling settings if the plan supports them
-
-Use South Africa North when available unless the exam tells you otherwise.
-
-4. SETTINGS TO ADD TO THE WEB APP
----------------------------------
-Use App Service Environment Variables or local user secrets.
-
-Azure__EventHubConnectionString = Event Hubs connection string
-Azure__EventHubName             = order-stream
-Azure__SqlConnectionString      = Azure SQL connection string
-
-For local development you can also use:
-dotnet user-secrets init
-dotnet user-secrets set "Azure:EventHubConnectionString" "PASTE-CONNECTION-STRING"
-dotnet user-secrets set "Azure:EventHubName" "order-stream"
-dotnet user-secrets set "Azure:SqlConnectionString" "PASTE-SQL-CONNECTION-STRING"
-
-5. SETTINGS TO ADD TO THE FUNCTION APP
---------------------------------------
-SqlConnectionString       = Azure SQL connection string
-EventHubConnectionString  = Event Hubs connection string
-EventHubName              = order-stream
-
-AzureWebJobsStorage is created/configured by the Function App.
-
-6. TEST THE HTTP FUNCTION FIRST
--------------------------------
-Use ProcessOrderData before fighting Event Hubs.
-
-POST JSON example:
-{
-  "orderId": "ORD-1001",
-  "amount": 1500,
-  "userId": "U001"
-}
-
-Expected status:
-high-value
-
-For amount 299, expected status:
-standard
-
-7. THEN TEST EVENT HUBS
------------------------
-Open the MVC app -> Send Event.
-Send an order.
-The web app publishes the event to Event Hubs.
-ProcessOrderEvent receives it and writes it to Azure SQL.
-Open Processed Data or run SELECT * FROM ProcessedOrders in Azure SQL Query Editor.
-
-8. IF EVENT HUBS IS BLOCKED
----------------------------
-Do not waste the whole exam.
-[ ] Screenshot the restriction/error.
-[ ] Keep ProcessOrderData HTTP function working.
-[ ] Explain the Event Hubs production setup in the report.
-[ ] Continue with SQL, testing, monitoring, scaling and theory.
-
-9. APP SERVICE SCALING NOTES
-----------------------------
-Easy values to remember if the paper asks for an example:
-Scale out: CPU > 70% for 5 minutes -> add 1 instance
-Scale in : CPU < 30% for 10 minutes -> remove 1 instance
-Minimum 1, Maximum 5
-Only configure values allowed by your App Service plan.
-
-10. LOAD TEST
--------------
-Start small. Test 3-5 orders first.
-If needed, use curl against the deployed HTTP Function endpoint.
-Do not start a large load test before one request works.
-
-11. SCREENSHOTS - TAKE THEM AS SOON AS THINGS WORK
----------------------------------------------------
-[ ] Resource Group
-[ ] App Service Overview
-[ ] Live HTTPS web app
-[ ] Azure SQL Database Overview
-[ ] ProcessedOrders table / query results
-[ ] Event Hubs namespace
-[ ] Event Hub overview / partitions
-[ ] Function App showing functions
-[ ] ProcessOrderData successful 200 OK
-[ ] Event Hub triggered Function if available
-[ ] Scaling settings or plan limitation
-[ ] Monitoring metrics / invocations / requests
-[ ] GitHub repository
-
-12. GIT
-------
-Run from the project root:
-git init
-git add .
-git commit -m "Initial practicum real-time processing app"
-git branch -M main
-git remote add origin YOUR-GITHUB-URL
-git push -u origin main
-
-Then commit after major working milestones.
-
-13. BEFORE SUBMITTING
----------------------
-[ ] Student number is correct
-[ ] Module code is correct
-[ ] GitHub URL works
-[ ] Deployed App Service URL works
-[ ] Screenshots match the actual exam requirements
-[ ] Theory questions answered
-[ ] No connection strings or passwords appear in the document or GitHub
-[ ] Final file name matches exam instructions
+Test the HTTP function with:
+curl -X POST http://localhost:7009/api/ProcessTelemetry \
+  -H "Content-Type: application/json" \
+  -d '{"sensorId":"SENSOR-001","fieldName":"Field A","soilMoisture":21,"temperature":29}'
